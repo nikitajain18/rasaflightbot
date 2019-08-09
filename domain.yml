@@ -1,0 +1,161 @@
+%YAML 1.1
+---
+actions:
+- Action.action_restart
+- action_aircraft
+- action_airfare
+- action_flight
+- action_flight_time
+- utter_ask_depart_time.period_of_day
+- utter_ask_fromloc.city_name
+- utter_ask_toloc.city_name
+- utter_cancelled
+- utter_deny
+- utter_did_that_help
+- utter_goodbye
+- utter_greet
+- utter_happy
+- utter_how_else_may_help
+- utter_how_help
+- utter_wrong_depart_time
+
+entities:
+- aircraft_code
+- airline_code
+- airline_name
+- airport_code
+- airport_name
+- arrive_date.date_relative
+- arrive_date.day_name
+- arrive_date.day_number
+- arrive_date.month_name
+- arrive_date.today_relative
+- arrive_time.end_time
+- arrive_time.period_mod
+- arrive_time.period_of_day
+- arrive_time.start_time
+- arrive_time.time
+- arrive_time.time_relative
+- city_name
+- class_type
+- connect
+- cost_relative
+- day_name
+- day_number
+- days_code
+- depart_date.date_relative
+- depart_date.day_name
+- depart_date.day_number
+- depart_date.month_name
+- depart_date.today_relative
+- depart_date.year
+- depart_time.end_time
+- depart_time.period_mod
+- depart_time.period_of_day
+- depart_time.start_time
+- depart_time.time
+- depart_time.time_relative
+- economy
+- fare_amount
+- fare_basis_code
+- flight_days
+- flight_mod
+- flight_number
+- flight_stop
+- flight_time
+- fromloc.airport_code
+- fromloc.airport_name
+- fromloc.city_name
+- fromloc.state_code
+- fromloc.state_name
+- meal
+- meal_code
+- meal_description
+- mod
+- month_name
+- or
+- period_of_day
+- restriction_code
+- return_date.date_relative
+- return_date.day_name
+- return_date.day_number
+- return_date.month_name
+- return_date.today_relative
+- return_time.period_mod
+- return_time.period_of_day
+- round_trip
+- state_code
+- state_name
+- stoploc.airport_name
+- stoploc.city_name
+- stoploc.state_code
+- time
+- time_relative
+- today_relative
+- toloc.airport_code
+- toloc.airport_name
+- toloc.city_name
+- toloc.country_name
+- toloc.state_code
+- toloc.state_name
+- transport_type
+
+forms:
+- aircraft_form
+- airfare_form
+- flight_form
+
+intents:
+- atis_flight
+- deny
+- atis_airfare
+- atis_aircraft
+- atis_flight+atis_airfare
+- atis_airline
+- atis_flight+atis_aircraft
+- atis_flight_time
+- affirm
+- inform
+- cancel
+- greet
+- goodbye
+
+slots:
+  depart_time.period_of_day:
+    type: unfeaturized
+  fromloc.city_name:
+    type: unfeaturized
+  requested_slot:
+    type: unfeaturized
+  toloc.city_name:
+    type: unfeaturized
+
+templates:
+  utter_ask_depart_time.period_of_day:
+  - text: During what period of day? Choose between morning, afternoon, evening, and
+      night.
+  utter_ask_fromloc.city_name:
+  - text: What is the origin city?
+  utter_ask_toloc.city_name:
+  - text: What is the destination city?
+  utter_cancelled:
+  - text: Query cancelled.
+  utter_default:
+  - text: Sorry, I don't understand. Please rephrase.
+  utter_deny:
+  - text: Sorry! Please repeat your query so we can begin again.
+  utter_did_that_help:
+  - text: Did that help you?
+  utter_goodbye:
+  - text: Bye
+  utter_greet:
+  - text: Hey! How are you?
+  - text: Hi!
+  utter_happy:
+  - text: Great carry on!
+  utter_how_else_may_help:
+  - text: How else may I help you?
+  utter_how_help:
+  - text: How may I help you?
+  utter_wrong_depart_time:
+  - text: Invalid time of day. Choose between morning, afternoon, evening and night.

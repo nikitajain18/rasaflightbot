@@ -1,0 +1,88 @@
+rasa chatbot
+
+
+setup and basic:
+
+https://github.com/RasaHQ/rasa/issues/3063
+- install rasa and anaconda and python (3.6 and below) in the directory where project will be kept
+- create virtual environment in your base directory
+- use command 'rasa init' to import basic files
+- files - domain.yml: contains intents and entities, plus actions, forms, and slots if needed
+	- config.yml: policies, language and pipeline
+	- endpoints.yml: endpoints for server connection
+	- data folder with 'nlu.md': either .md or .json file with training data; and 'stories.md': sample stories showcasing bot interaction
+	- actions.py: for custom actions in case the bot requires
+- use command 'rasa train' to train your model for both nlu and core, 'rasa train nlu' to generate nlu model, and 'rasa train core' for core model
+- use command 'rasa shell' to interact with bot in shell
+- use command 'rasa run actions' if your bot has custom actions, to run action server
+- use command 'rasa shell nlu' to see bot confidence for each intent for user input
+- use command 'rasa interactive -m <modelpath(to the latest .tar.gz model)> --endpoints endpoints.yml' for interactive learning
+
+
+additional comments:
+
+- action server needs to be restarted each time changes in the action file have been made
+- 'rasa train' needs to be done each time there has been a change in any other file.
+- removed training data for intents not in use are kept in 'spare' folder
+
+
+basic working of flight chatbot:
+
+- training data is in .md format and in data folder
+- intents with custom actions - atis_flight, atis_aircraft, atis_airfare
+- atis_flight - form requires fromloc.city_name, toloc.city_name, and depart_time.period_of_day.
+- entity is only mapped automatically to slot if the entity name is same as slot name
+- but when user only inputs a city name when asked for origin or destination city ('new york') the bot recognises it as entity 'city_name' and not fromloc.city_name or toloc.city_name, so it fails to map it to the correct entity and shows an exception like "Failed to extract slot toloc.city_name with action aircraft_form"
+- to overcome that, create an 'inform' intent and give all examples of answers that user might give to questions asked by the bot, like just the city name 'new delhi' when asked for destination, and when chatbot identifies inform intent with with entity as 'city_name', use slot_mappings method (see actions.py FlightForm class) to tell chatbot to map the city_name entity it picks up to fromloc.city_name and then the next city name entity to toloc.city_name - order given by the ordered in which they are required as stated by the required_slots method.
+- the bot is able to identify correctly without slot mapping when the user inputs all information on the first go - 'show me flights from mumbai to pune'
+- 'cancel' intent should trigger a restart and the bot should ask how it can help the user
+- default actions are 'restart','deactivate_form', 'default_fallback'
+- 'confmat' will give information about the testing aspect of chatbot. There is a confusion matrix, a histogram showing hit vs miss for a particular confidence level, and the graph of the flow of the chatbot conversation.
+- credentials.yml should have:
+	callback:
+  	  # URL to which Core will send the bot responses
+  	  url: "http://localhost:5055/bot"
+ 	(and)
+	rest:
+	  # you don't need to provide anything here - this channel doesn't
+	  # require any credentials
+- endpoints.yml should have:
+	action_endpoint:
+	  url: "http://localhost:5055/webhook"
+
+
+webchat (was not functional)
+
+- to use 'webchat' in order to build UI for chatbot to integrate into your website: documentation - https://github.com/mrbot-ai/rasa-webchat
+storage variable in script portion to be added should be set to "session" - this will renew chat when tab or browser is closed.
+- in 'connect.py':
+	interpreter = NaturalLanguageInterpreter.create("C:\\Users\\NJJain\\new_ex\\models\\20190709-151422\\nlu")
+		// give the latest model number. As rasa compacts the metadata file within the .tar file of the model, the model has to be untarred and then the above path has to include the nlu portion of the untarred model. Untar using - tar xvf <MODELPATH INCLUDING MODEL> -C <where to place the untarred contents>
+for example if i am in folder 'models' all i need to do is: tar xvf 20190724-133319.tar.gz -C 20190724-133319
+
+	agent = Agent.load("C:\\Users\\NJJain\\new_ex\\models\\", interpreter=interpreter)
+		// should remain same as above; give path of the models folder within chatbot directory
+
+primary example used - https://github.com/RasaHQ/rasa/blob/master/examples/flightbot
+
+
+
+steps to deploying on slack - functional
+- use api.slack.com/apps to create an app for the chatbot
+- go to 'bot users' to fill out the name and username
+- go to 'oauth and permissions' and use the 'Bot User OAuth Access Token' for the slack_token value in the credentials.yml file
+- subcribe to bot events 'app_mention' and 'message.im'
+- install your app in the workspace
+- start the custom actions server - rasa run actions
+- start the rasa server - 'rasa run --connector slack --port 5005'
+- start ngrok on same port - 'ngrok http 5005'
+- grab the 'https://...' url and paste on 'event subscription' in this format:
+https://<your_ngrok_url>/webhooks/slack/webhook
+it will say 'verified'
+- reinstall if necessary
+- go to slack workspace to begin conversation
+
+
+
+
+

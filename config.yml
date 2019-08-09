@@ -1,0 +1,23 @@
+# Configuration for Rasa NLU.
+# https://rasa.com/docs/rasa/nlu/components/
+language: en
+pipeline: 
+  - name: WhitespaceTokenizer
+  - name: CRFEntityExtractor
+  - name: "CountVectorsFeaturizer"
+  - name: "EmbeddingIntentClassifier"
+    intent_tokenization_flag: true
+    intent_split_symbol: "+"
+  - name: EntitySynonymMapper
+
+# Configuration for Rasa Core.
+# https://rasa.com/docs/rasa/core/policies/
+policies:
+  - name: MemoizationPolicy
+  - name: KerasPolicy
+  - name: "FormPolicy"
+  - name: "FallbackPolicy"
+    nlu_threshold: 0.5
+    core_threshold: 0.3
+    fallback_action_name: "action_default_fallback"
+
